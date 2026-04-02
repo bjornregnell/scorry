@@ -40,7 +40,7 @@ object Main:
             "https://en.wikipedia.org/wiki/Range_(statistics)")
         )
 
-    val corrInput = Var("1 1 ; 2 3 ; 3 6 ; 4 10 ; 5 15 ; 10 100")
+    val corrInput = Var("1 2.1 ; 2.5 5 ; 3 4.3 ; 4.2 9 ; 5 7.5 ; 6.1 12 ; 7 10.4 ; 8.3 15")
     val corrSignal = corrInput.signal.map: text =>
       try
         val pairs = parsePairs(text)
@@ -48,11 +48,17 @@ object Main:
         else Seq(
           ("N", s"${pairs.length} pairs", "The number of paired observations",
             "https://en.wikipedia.org/wiki/Sample_size_determination"),
-          ("Spearman rho", s"${spearmanCorrelation(pairs)}",
+          { val rho = spearmanCorrelation(pairs); val p = pearsonPValue(rho, pairs.length)
+          ("Spearman rho", s"$rho, p = ${f"$p%.4f"}",
             "Spearman rank correlation: measures monotonic association using ranks instead of raw values. " +
             "Ranges from -1 to +1. More robust to outliers than Pearson. " +
+            "The p-value tests the null hypothesis that there is no monotonic association (rho = 0). " +
+            "p < 0.05 is conventionally considered statistically significant; p < 0.01 is highly significant; " +
+            "p > 0.1 suggests no evidence of monotonic association. " +
+            "The p-value is computed using the t-distribution approximation: t = rho * sqrt((n-2)/(1-rho²)), " +
+            "which is accurate for n >= 10. " +
             "Assumes: (1) both variables are at least ordinal, (2) the relationship is monotonic.",
-            "https://en.wikipedia.org/wiki/Spearman%27s_rank_correlation_coefficient"),
+            "https://en.wikipedia.org/wiki/Spearman%27s_rank_correlation_coefficient") },
           { val r = pearsonCorrelation(pairs); val p = pearsonPValue(r, pairs.length)
           ("Pearson r", s"$r, p = ${f"$p%.4f"}",
             "Pearson product-moment correlation coefficient: measures linear association between two variables. " +
@@ -92,8 +98,10 @@ object Main:
       ),
       div(
         display := "flex",
+        flexWrap := "wrap",
         gap     := "2em",
         alignItems := "flex-start",
+        overflowX := "auto",
         div(children <-- statsSignal.map(items => items.flatMap((lbl, val_, tip, url) =>
           Seq(br(), span(cls := "tip", dataAttr("tip") := tip,
             a(lbl, href := url, target := "_blank"), s": $val_"))))),
@@ -109,8 +117,10 @@ object Main:
       ),
       div(
         display := "flex",
+        flexWrap := "wrap",
         gap     := "2em",
         alignItems := "flex-start",
+        overflowX := "auto",
         div(children <-- corrSignal.map(items => items.flatMap((lbl, val_, tip, url) =>
           Seq(br(), span(cls := "tip", dataAttr("tip") := tip,
             a(lbl, href := url, target := "_blank"), s": $val_"))))),
