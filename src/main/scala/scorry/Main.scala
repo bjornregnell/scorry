@@ -8,7 +8,7 @@ import Plots.*
 object Main:
 
   def main(args: Array[String]): Unit =
-    val inputText = Var("1.2 3.5 5.8 9.1 9.1")
+    val inputText = Var("1.2 3.5 5.8 9.1 9.1 10")
     val numsSignal = inputText.signal.map: text =>
       try
         val nums = parseDoubles(text)
