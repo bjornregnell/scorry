@@ -1,0 +1,9 @@
+target
+.scala-build
+**/.bloop
+**/.bsp
+**/.metals
+**/.vscode
+**/metals.sbt
+project/project
+main.js
