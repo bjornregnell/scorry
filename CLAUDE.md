@@ -4,8 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-`scorry` is a Scala library for correlation, mean, and other statistics. The project is in early/skeleton state — no source code or build system has been added yet.
-
+`scorry` is a Scala library for correlation, mean, and other statistics. T
 ## Expected Structure
 
 When implementing, follow standard Scala/SBT conventions:
