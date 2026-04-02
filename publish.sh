@@ -8,6 +8,7 @@ echo "Building optimised JS..."
 
 sbt --client clean
 sbt --client fullOptJS
+sbt --client fastOptJS
 
 mkdir -p "$DEST"
 
