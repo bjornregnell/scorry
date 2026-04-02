@@ -14,4 +14,9 @@ cp "$SBT_OUT/main.js"     "$DEST/main.js"
 cp "$SBT_OUT/main.js.map" "$DEST/main.js.map"
 sed 's|./target/scala-3.8.3/scorry-fastopt.js|main.js|' index.html > "$DEST/index.html"
 
+pushd $DEST
+git commit -am "update scorry"
+git push
+popd
+
 echo "Published to $DEST"
