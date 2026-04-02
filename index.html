@@ -18,6 +18,29 @@
       padding: 0.4em 0.6em;
     }
     input { width: 100%; max-width: 30em; }
+    .tip {
+      position: relative;
+      cursor: help;
+      border-bottom: 1px dotted #888;
+    }
+    .tip::after {
+      content: attr(data-tip);
+      position: absolute;
+      left: 0; top: 100%;
+      z-index: 1;
+      background: #333;
+      color: #fff;
+      padding: 0.4em 0.6em;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      width: max-content;
+      max-width: 25em;
+      white-space: normal;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s;
+    }
+    .tip:hover::after { opacity: 1; }
   </style>
 </head>
 <body>

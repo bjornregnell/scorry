@@ -31,8 +31,14 @@ object Main:
           (s"Range: ${range(nums)}", "Difference between the maximum and minimum values")
         )
 
-    val corrInput  = Var("1 2 ; 3 4 ; 5 6 ; 7 8")
-    val corrResult = Var("")
+    val corrInput = Var("1 2 ; 3 4 ; 5 6 ; 7 8")
+    val corrSignal = corrInput.signal.map: text =>
+      try
+        val pairs = parsePairs(text)
+        if pairs.length < 2 then ""
+        else s"Pearson r: ${pearsonRankOrderCorrelation(pairs)}"
+      catch
+        case _: Exception => "Invalid input"
 
     val app = div(
       label("Enter numbers separated by spaces"),
@@ -47,7 +53,7 @@ object Main:
         gap     := "2em",
         alignItems := "flex-start",
         div(children <-- statsSignal.map(items => items.flatMap((text, tip) =>
-          Seq(br(), span(title := tip, text))))),
+          Seq(br(), span(cls := "tip", dataAttr("tip") := tip, text))))),
         child.maybe <-- numsSignal.map(_.filter(_.length >= 2).map(boxPlot))
       ),
       hr(),
@@ -59,21 +65,15 @@ object Main:
         onInput.mapToValue --> corrInput
       ),
       br(),
-      button(
-        "Calculate Correlation",
-        onClick --> { _ =>
-          corrResult.set(
-            try
-              val pairs = parsePairs(corrInput.now())
-              if pairs.length < 2 then "Need at least 2 pairs"
-              else s"Pearson r: ${pearsonRankOrderCorrelation(pairs)}"
-            catch
-              case _: Exception => "Invalid input"
-          )
-        }
-      ),
-      span(" "),
-      child.text <-- corrResult
+      span(
+        cls := "tip",
+        dataAttr("tip") :=
+          "Pearson product-moment correlation coefficient: measures linear association between two variables. " +
+          "Ranges from -1 (perfect negative) to +1 (perfect positive). " +
+          "Assumes: (1) both variables are continuous, (2) the relationship is linear, " +
+          "(3) no significant outliers, (4) variables are approximately normally distributed.",
+        child.text <-- corrSignal
+      )
     )
 
     renderOnDomContentLoaded(dom.document.getElementById("app"), app)
