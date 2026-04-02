@@ -5,6 +5,8 @@ DEST=../bjornregnell.github.io/scorry
 SBT_OUT=target/scala-3.8.3/scorry-opt
 
 echo "Building optimised JS..."
+
+sbt --client clean
 sbt --client fullOptJS
 
 mkdir -p "$DEST"
