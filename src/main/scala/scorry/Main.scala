@@ -105,7 +105,9 @@ object Main:
         div(children <-- statsSignal.map(items => items.flatMap((lbl, val_, tip, url) =>
           Seq(br(), span(cls := "tip", dataAttr("tip") := tip,
             a(lbl, href := url, target := "_blank"), s": $val_"))))),
-        child.maybe <-- numsSignal.map(_.filter(_.length >= 2).map(boxPlot))
+        child.maybe <-- numsSignal.map(_.filter(_.length >= 2).map(nums =>
+          div(boxPlot(nums), br(),
+            a("Box plot", href := "https://en.wikipedia.org/wiki/Box_plot", target := "_blank"))))
       ),
       hr(),
       label("Enter pairs of numbers (pairs separated by semicolons)"),
@@ -124,7 +126,9 @@ object Main:
         div(children <-- corrSignal.map(items => items.flatMap((lbl, val_, tip, url) =>
           Seq(br(), span(cls := "tip", dataAttr("tip") := tip,
             a(lbl, href := url, target := "_blank"), s": $val_"))))),
-        child.maybe <-- pairsSignal.map(_.map(scatterPlot))
+        child.maybe <-- pairsSignal.map(_.map(pairs =>
+          div(scatterPlot(pairs), br(),
+            a("Scatter plot", href := "https://en.wikipedia.org/wiki/Scatter_plot", target := "_blank"))))
       )
     )
 

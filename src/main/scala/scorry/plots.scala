@@ -37,6 +37,11 @@ object Plots:
 
     s.svg(
       attr("width") := s"${w.toInt}", attr("height") := s"${h.toInt}",
+      s.titleTag("Box plot: the box spans Q1 (25th percentile) to Q3 (75th percentile), " +
+        "covering the middle 50% of the data (IQR). " +
+        "The red line marks the median. " +
+        "Whiskers extend to min and max. " +
+        "If the median is off-center in the box, the distribution is skewed."),
       // whisker line
       ln(cx, y(minVal), cx, y(maxVal)),
       // min cap
@@ -99,6 +104,11 @@ object Plots:
 
     s.svg(
       attr("width") := s"${w.toInt}", attr("height") := s"${h.toInt}",
+      s.titleTag("Scatter plot: each dot is a pair (x, y). " +
+        "Upward trend = positive correlation; downward = negative. " +
+        "A tight linear pattern means strong Pearson correlation; " +
+        "a tight monotonic (possibly curved) pattern means strong Spearman correlation. " +
+        "Scattered dots suggest weak or no association."),
       // axes
       ln(padLeft, padTop, padLeft, padTop + plotH),
       ln(padLeft, padTop + plotH, padLeft + plotW, padTop + plotH),
