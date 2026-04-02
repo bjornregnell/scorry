@@ -8,7 +8,7 @@ import Plots.*
 object Main:
 
   def main(args: Array[String]): Unit =
-    val inputText = Var("")
+    val inputText = Var("1.2 3.5 5.8 9.1 9.1")
     val numsSignal = inputText.signal.map: text =>
       try
         val nums = parseDoubles(text)
@@ -31,15 +31,15 @@ object Main:
           (s"Range: ${range(nums)}", "Difference between the maximum and minimum values")
         )
 
-    val corrInput  = Var("")
+    val corrInput  = Var("1 2 ; 3 4 ; 5 6 ; 7 8")
     val corrResult = Var("")
 
     val app = div(
       label("Enter numbers separated by spaces"),
       br(),
       input(
-        typ         := "text",
-        placeholder := "1.5 3.7 2.0 8.3 4.1",
+        typ   := "text",
+        value := inputText.now(),
         onInput.mapToValue --> inputText
       ),
       div(
@@ -54,8 +54,8 @@ object Main:
       label("Enter pairs of numbers (pairs separated by semicolons)"),
       br(),
       input(
-        typ         := "text",
-        placeholder := "1 2 ; 3 4 ; 5 6 ; 7 8",
+        typ   := "text",
+        value := corrInput.now(),
         onInput.mapToValue --> corrInput
       ),
       br(),
