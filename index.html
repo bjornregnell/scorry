@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scorry</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      font-family: system-ui, sans-serif;
+      font-size: clamp(1rem, 2vw, 1.3rem);
+      line-height: 1.5;
+      margin: 0;
+      padding: 5vw;
+    }
+    input, button {
+      font: inherit;
+      padding: 0.4em 0.6em;
+    }
+    input { width: 100%; max-width: 30em; }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <script src="./target/scala-3.8.3/scorry-fastopt.js"></script>
+</body>
+</html>
