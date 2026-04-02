@@ -60,16 +60,17 @@ object Plots:
     val xMin = xs.min; val xMax = xs.max
     val yMin = ys.min; val yMax = ys.max
 
-    val w = 280.0; val h = 280.0; val pad = 40.0
-    val plotW = w - 2 * pad; val plotH = h - 2 * pad
+    val padLeft = 60.0; val padRight = 20.0; val padTop = 20.0; val padBottom = 40.0
+    val w = 320.0; val h = 300.0
+    val plotW = w - padLeft - padRight; val plotH = h - padTop - padBottom
 
     def px(v: Double): Double =
-      if xMax == xMin then pad + plotW / 2
-      else pad + (v - xMin) / (xMax - xMin) * plotW
+      if xMax == xMin then padLeft + plotW / 2
+      else padLeft + (v - xMin) / (xMax - xMin) * plotW
 
     def py(v: Double): Double =
-      if yMax == yMin then pad + plotH / 2
-      else pad + (1 - (v - yMin) / (yMax - yMin)) * plotH
+      if yMax == yMin then padTop + plotH / 2
+      else padTop + (1 - (v - yMin) / (yMax - yMin)) * plotH
 
     def fmt(v: Double): String = f"$v%.1f"
 
@@ -83,24 +84,24 @@ object Plots:
         attr("r") := "4", attr("fill") := "#336699")
 
     val xTicks = Seq(xMin, (xMin + xMax) / 2, xMax).map: v =>
-      s.text(attr("x") := s"${px(v)}", attr("y") := s"${pad + plotH + 18}",
+      s.text(attr("x") := s"${px(v)}", attr("y") := s"${padTop + plotH + 18}",
         attr("text-anchor") := "middle", attr("font-size") := "11", fmt(v))
 
     val yTicks = Seq(yMin, (yMin + yMax) / 2, yMax).map: v =>
-      s.text(attr("x") := s"${pad - 8}", attr("y") := s"${py(v) + 4}",
+      s.text(attr("x") := s"${padLeft - 8}", attr("y") := s"${py(v) + 4}",
         attr("text-anchor") := "end", attr("font-size") := "11", fmt(v))
 
-    val xLabel = s.text(attr("x") := s"${pad + plotW / 2}", attr("y") := s"${h - 2}",
-      attr("text-anchor") := "middle", attr("font-size") := "12", "x")
-    val yLabel = s.text(attr("x") := "4", attr("y") := s"${pad + plotH / 2}",
+    val xLabel = s.text(attr("x") := s"${padLeft + plotW / 2}", attr("y") := s"${h - 2}",
+      attr("text-anchor") := "middle", attr("font-size") := "12", "x: first number")
+    val yLabel = s.text(attr("x") := "14", attr("y") := s"${padTop + plotH / 2}",
       attr("text-anchor") := "middle", attr("font-size") := "12",
-      attr("transform") := s"rotate(-90, 4, ${pad + plotH / 2})", "y")
+      attr("transform") := s"rotate(-90, 14, ${padTop + plotH / 2})", "y: second number")
 
     s.svg(
       attr("width") := s"${w.toInt}", attr("height") := s"${h.toInt}",
       // axes
-      ln(pad, pad, pad, pad + plotH),
-      ln(pad, pad + plotH, pad + plotW, pad + plotH),
+      ln(padLeft, padTop, padLeft, padTop + plotH),
+      ln(padLeft, padTop + plotH, padLeft + plotW, padTop + plotH),
       // dots, ticks, labels
       s.g(dots*),
       s.g(xTicks*),

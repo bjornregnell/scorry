@@ -31,7 +31,7 @@ object Main:
           (s"Range: ${range(nums)}", "Difference between the maximum and minimum values")
         )
 
-    val corrInput = Var("1 2 ; 3 4 ; 5 6 ; 7 8")
+    val corrInput = Var("1 1 ; 2 3 ; 3 6 ; 4 10 ; 5 15 ; 10 100")
     val corrSignal = corrInput.signal.map: text =>
       try
         val pairs = parsePairs(text)
