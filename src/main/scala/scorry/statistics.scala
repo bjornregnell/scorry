@@ -45,7 +45,7 @@ object SummaryStatistics:
       val nums = pair.split("\\s+").map(_.toDouble)
       (nums(0), nums(1))
 
-  def pearsonRankOrderCorrelation(pairs: Seq[(Double, Double)]): Double =
+  def pearsonCorrelation(pairs: Seq[(Double, Double)]): Double =
     val n = pairs.length
     val xs = pairs.map(_._1)
     val ys = pairs.map(_._2)
@@ -55,3 +55,19 @@ object SummaryStatistics:
     val denX = math.sqrt(xs.map(x => (x - meanX) * (x - meanX)).sum)
     val denY = math.sqrt(ys.map(y => (y - meanY) * (y - meanY)).sum)
     num / (denX * denY)
+
+  private def ranks(values: Seq[Double]): Seq[Double] =
+    val sorted = values.zipWithIndex.sortBy(_._1)
+    val ranked = Array.ofDim[Double](values.length)
+    var i = 0
+    while i < sorted.length do
+      var j = i
+      while j < sorted.length - 1 && sorted(j + 1)._1 == sorted(i)._1 do j += 1
+      val avgRank = (i + j) / 2.0 + 1.0
+      for k <- i to j do ranked(sorted(k)._2) = avgRank
+      i = j + 1
+    ranked.toSeq
+
+  def spearmanCorrelation(pairs: Seq[(Double, Double)]): Double =
+    val rankedPairs = ranks(pairs.map(_._1)).zip(ranks(pairs.map(_._2)))
+    pearsonCorrelation(rankedPairs)

@@ -35,10 +35,20 @@ object Main:
     val corrSignal = corrInput.signal.map: text =>
       try
         val pairs = parsePairs(text)
-        if pairs.length < 2 then ""
-        else s"Pearson r: ${pearsonRankOrderCorrelation(pairs)}"
+        if pairs.length < 2 then Seq.empty
+        else Seq(
+          (s"Pearson r: ${pearsonCorrelation(pairs)}",
+            "Pearson product-moment correlation coefficient: measures linear association between two variables. " +
+            "Ranges from -1 (perfect negative) to +1 (perfect positive). " +
+            "Assumes: (1) both variables are continuous, (2) the relationship is linear, " +
+            "(3) no significant outliers, (4) variables are approximately normally distributed."),
+          (s"Spearman rho: ${spearmanCorrelation(pairs)}",
+            "Spearman rank correlation: measures monotonic association using ranks instead of raw values. " +
+            "Ranges from -1 to +1. More robust to outliers than Pearson. " +
+            "Assumes: (1) both variables are at least ordinal, (2) the relationship is monotonic.")
+        )
       catch
-        case _: Exception => "Invalid input"
+        case _: Exception => Seq(("Invalid input", ""))
 
     val app = div(
       label("Enter numbers separated by spaces"),
@@ -65,15 +75,8 @@ object Main:
         onInput.mapToValue --> corrInput
       ),
       br(),
-      span(
-        cls := "tip",
-        dataAttr("tip") :=
-          "Pearson product-moment correlation coefficient: measures linear association between two variables. " +
-          "Ranges from -1 (perfect negative) to +1 (perfect positive). " +
-          "Assumes: (1) both variables are continuous, (2) the relationship is linear, " +
-          "(3) no significant outliers, (4) variables are approximately normally distributed.",
-        child.text <-- corrSignal
-      )
+      div(children <-- corrSignal.map(items => items.flatMap((text, tip) =>
+        Seq(br(), span(cls := "tip", dataAttr("tip") := tip, text)))))
     )
 
     renderOnDomContentLoaded(dom.document.getElementById("app"), app)
