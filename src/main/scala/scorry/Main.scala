@@ -50,6 +50,13 @@ object Main:
       catch
         case _: Exception => Seq(("Invalid input", ""))
 
+    val pairsSignal = corrInput.signal.map: text =>
+      try
+        val pairs = parsePairs(text)
+        if pairs.length < 2 then None else Some(pairs)
+      catch
+        case _: Exception => None
+
     val app = div(
       label("Enter numbers separated by spaces"),
       br(),
@@ -74,9 +81,14 @@ object Main:
         value := corrInput.now(),
         onInput.mapToValue --> corrInput
       ),
-      br(),
-      div(children <-- corrSignal.map(items => items.flatMap((text, tip) =>
-        Seq(br(), span(cls := "tip", dataAttr("tip") := tip, text)))))
+      div(
+        display := "flex",
+        gap     := "2em",
+        alignItems := "flex-start",
+        div(children <-- corrSignal.map(items => items.flatMap((text, tip) =>
+          Seq(br(), span(cls := "tip", dataAttr("tip") := tip, text))))),
+        child.maybe <-- pairsSignal.map(_.map(scatterPlot))
+      )
     )
 
     renderOnDomContentLoaded(dom.document.getElementById("app"), app)
