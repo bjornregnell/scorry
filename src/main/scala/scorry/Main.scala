@@ -22,6 +22,7 @@ object Main:
         val modeVals = mode(nums)
         val modeStr = if modeVals.isEmpty then "no mode" else modeVals.mkString(", ")
         Seq(
+          (s"N: ${nums.length}", "The number of observations in the data set"),
           (s"Arithmetic Mean: ${mean(nums)}", "Sum of all values divided by the number of values"),
           (s"Geometric Mean: ${geometricMean(nums)}", "The nth root of the product of n values; useful for growth rates"),
           (s"Median: ${median(nums)}", "The middle value when sorted; less sensitive to outliers than the mean"),
@@ -37,6 +38,7 @@ object Main:
         val pairs = parsePairs(text)
         if pairs.length < 2 then Seq.empty
         else Seq(
+          (s"N: ${pairs.length} pairs", "The number of paired observations"),
           (s"Spearman rho: ${spearmanCorrelation(pairs)}",
             "Spearman rank correlation: measures monotonic association using ranks instead of raw values. " +
             "Ranges from -1 to +1. More robust to outliers than Pearson. " +
