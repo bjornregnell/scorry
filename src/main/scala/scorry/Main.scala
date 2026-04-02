@@ -43,11 +43,12 @@ object Main:
             "Spearman rank correlation: measures monotonic association using ranks instead of raw values. " +
             "Ranges from -1 to +1. More robust to outliers than Pearson. " +
             "Assumes: (1) both variables are at least ordinal, (2) the relationship is monotonic."),
-          (s"Pearson r: ${pearsonCorrelation(pairs)}",
+          { val r = pearsonCorrelation(pairs); val p = pearsonPValue(r, pairs.length)
+          (s"Pearson r: $r, p = ${f"$p%.4f"}",
             "Pearson product-moment correlation coefficient: measures linear association between two variables. " +
             "Ranges from -1 (perfect negative) to +1 (perfect positive). " +
             "Assumes: (1) both variables are continuous, (2) the relationship is linear, " +
-            "(3) no significant outliers, (4) variables are approximately normally distributed."),
+            "(3) no significant outliers, (4) variables are approximately normally distributed.") },
           { val (t, df, p) = pairedTTest(pairs)
             (s"Paired t-test: t = ${f"$t%.4f"}, df = $df, p = ${f"$p%.4f"}",
               "Student's paired t-test: tests whether the mean difference between paired observations is zero. " +

@@ -113,6 +113,12 @@ object SummaryStatistics:
     val x = df.toDouble / (df + t * t)
     betai(df / 2.0, 0.5, x)
 
+  def pearsonPValue(r: Double, n: Int): Double =
+    if math.abs(r) >= 1.0 then 0.0
+    else
+      val t = r * math.sqrt((n - 2) / (1 - r * r))
+      tTestPValue(t, n - 2)
+
   def pairedTTest(pairs: Seq[(Double, Double)]): (Double, Int, Double) =
     val diffs = pairs.map((x, y) => x - y)
     val n = diffs.length
