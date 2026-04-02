@@ -45,7 +45,17 @@ object Main:
           (s"Spearman rho: ${spearmanCorrelation(pairs)}",
             "Spearman rank correlation: measures monotonic association using ranks instead of raw values. " +
             "Ranges from -1 to +1. More robust to outliers than Pearson. " +
-            "Assumes: (1) both variables are at least ordinal, (2) the relationship is monotonic.")
+            "Assumes: (1) both variables are at least ordinal, (2) the relationship is monotonic."),
+          { val (t, df, p) = pairedTTest(pairs)
+            (s"Paired t-test: t = ${f"$t%.4f"}, df = $df, p = ${f"$p%.4f"}",
+              "Student's paired t-test: tests whether the mean difference between paired observations is zero. " +
+              "The p-value is the probability of observing a t-statistic this extreme if the true mean difference is zero (two-tailed). " +
+              "p < 0.05 is conventionally considered statistically significant, but consider effect size and sample size too. " +
+              "p < 0.01 is highly significant; p > 0.1 suggests no evidence against equal means. " +
+              "Related to Pearson r: both assume normality and continuous data. " +
+              "A significant Pearson r means the variables co-vary, while a significant t-test means their means differ. " +
+              "They are complementary — high correlation does not imply equal means, and equal means does not imply no correlation. " +
+              "Assumes: (1) differences are normally distributed, (2) pairs are independent, (3) data is continuous.") }
         )
       catch
         case _: Exception => Seq(("Invalid input", ""))
