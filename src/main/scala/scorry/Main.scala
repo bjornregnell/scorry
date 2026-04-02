@@ -76,7 +76,14 @@ object Main:
               "A significant Pearson r means the variables co-vary, while a significant t-test means their means differ. " +
               "They are complementary — high correlation does not imply equal means, and equal means does not imply no correlation. " +
               "Assumes: (1) differences are normally distributed, (2) pairs are independent, (3) data is continuous.",
-              "https://en.wikipedia.org/wiki/Student%27s_t-test#Paired_samples") }
+              "https://en.wikipedia.org/wiki/Student%27s_t-test#Paired_samples") },
+          ("dCor", s"${f"${distanceCorrelation(pairs)}%.4f"}",
+            "Distance correlation: measures both linear and non-linear association between two variables. " +
+            "Ranges from 0 (independent) to 1 (dependent). Unlike Pearson (linear only) and Spearman " +
+            "(monotonic only), dCor can detect arbitrary dependence structures. " +
+            "dCor = 0 if and only if the variables are statistically independent. " +
+            "No assumptions about the form of the relationship are needed.",
+            "https://en.wikipedia.org/wiki/Distance_correlation")
         )
       catch
         case _: Exception => Seq(("Invalid input", "", "", ""))

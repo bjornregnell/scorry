@@ -379,3 +379,46 @@ object SummaryStatistics:
     val t = meanD / (sdD / math.sqrt(n))
     val df = n - 1
     (t, df, tTestPValue(t, df))
+
+  /** Computes the distance correlation (dCor) between two variables.
+    *
+    * Distance correlation measures both linear and non-linear association
+    * between two variables. Unlike Pearson (linear only) and Spearman
+    * (monotonic only), dCor can detect arbitrary dependence structures.
+    * dCor = 0 if and only if the variables are independent (for finite
+    * second moments).
+    *
+    * The algorithm computes pairwise Euclidean distance matrices for x and y,
+    * double-centers them (subtracting row, column, and grand means), then
+    * computes dCov²(X,Y), dVar²(X), and dVar²(Y) as the mean of the
+    * element-wise products. Finally: dCor = √(dCov²/(√(dVar²(X)·dVar²(Y)))).
+    *
+    * @param pairs a sequence of (x, y) value pairs, with at least 2 pairs
+    * @return the distance correlation in [0, 1] (0 = independent, 1 = dependent)
+    */
+  def distanceCorrelation(pairs: Seq[(Double, Double)]): Double =
+    val n = pairs.length
+    val xs = pairs.map(_._1)
+    val ys = pairs.map(_._2)
+
+    def distMatrix(vs: Seq[Double]): Array[Array[Double]] =
+      Array.tabulate(n, n)((i, j) => math.abs(vs(i) - vs(j)))
+
+    def doubleCenter(d: Array[Array[Double]]): Array[Array[Double]] =
+      val rowMeans = d.map(row => row.sum / n)
+      val colMeans = Array.tabulate(n)(j => (0 until n).map(i => d(i)(j)).sum / n)
+      val grandMean = rowMeans.sum / n
+      Array.tabulate(n, n)((i, j) => d(i)(j) - rowMeans(i) - colMeans(j) + grandMean)
+
+    def meanProduct(a: Array[Array[Double]], b: Array[Array[Double]]): Double =
+      var s = 0.0
+      for i <- 0 until n; j <- 0 until n do s += a(i)(j) * b(i)(j)
+      s / (n * n)
+
+    val aCenter = doubleCenter(distMatrix(xs))
+    val bCenter = doubleCenter(distMatrix(ys))
+    val dCovSq = meanProduct(aCenter, bCenter)
+    val dVarXSq = meanProduct(aCenter, aCenter)
+    val dVarYSq = meanProduct(bCenter, bCenter)
+    if dVarXSq <= 0 || dVarYSq <= 0 then 0.0
+    else math.sqrt(dCovSq / math.sqrt(dVarXSq * dVarYSq))
