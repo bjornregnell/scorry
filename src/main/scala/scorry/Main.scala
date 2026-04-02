@@ -52,12 +52,13 @@ object Main:
     val q3     = quartile(sorted, 0.75)
     val maxVal = sorted.last
 
-    val w = 300.0; val h = 80.0; val pad = 40.0
-    val plotW = w - 2 * pad; val cy = h / 2; val boxH = 30.0
+    val w = 100.0; val h = 280.0; val pad = 30.0
+    val plotH = h - 2 * pad; val cx = w / 2; val boxW = 30.0
 
-    def x(v: Double): Double =
-      if maxVal == minVal then pad + plotW / 2
-      else pad + (v - minVal) / (maxVal - minVal) * plotW
+    // y is inverted: max value at top, min at bottom
+    def y(v: Double): Double =
+      if maxVal == minVal then pad + plotH / 2
+      else pad + (1 - (v - minVal) / (maxVal - minVal)) * plotH
 
     def fmt(v: Double): String = f"$v%.1f"
 
@@ -66,21 +67,27 @@ object Main:
         attr("x2") := s"$xb", attr("y2") := s"$yb",
         attr("stroke") := color, attr("stroke-width") := sw)
 
-    def lbl(xp: Double, txt: String) =
-      s.text(attr("x") := s"$xp", attr("y") := "12",
-        attr("text-anchor") := "middle", attr("font-size") := "11", txt)
+    def lbl(yp: Double, txt: String) =
+      s.text(attr("x") := s"${cx + boxW/2 + 8}", attr("y") := s"${yp + 4}",
+        attr("text-anchor") := "start", attr("font-size") := "11", txt)
 
     s.svg(
       attr("width") := s"${w.toInt}", attr("height") := s"${h.toInt}",
-      ln(x(minVal), cy, x(maxVal), cy),
-      ln(x(minVal), cy - boxH/2, x(minVal), cy + boxH/2),
-      ln(x(maxVal), cy - boxH/2, x(maxVal), cy + boxH/2),
-      s.rect(attr("x") := s"${x(q1)}", attr("y") := s"${cy - boxH/2}",
-        attr("width") := s"${x(q3) - x(q1)}", attr("height") := s"$boxH",
+      // whisker line
+      ln(cx, y(minVal), cx, y(maxVal)),
+      // min cap
+      ln(cx - boxW/2, y(minVal), cx + boxW/2, y(minVal)),
+      // max cap
+      ln(cx - boxW/2, y(maxVal), cx + boxW/2, y(maxVal)),
+      // box Q1–Q3
+      s.rect(attr("x") := s"${cx - boxW/2}", attr("y") := s"${y(q3)}",
+        attr("width") := s"$boxW", attr("height") := s"${y(q1) - y(q3)}",
         attr("fill") := "#6ca0dc", attr("stroke") := "#333", attr("stroke-width") := "1"),
-      ln(x(med), cy - boxH/2, x(med), cy + boxH/2, "#c00", "2"),
-      lbl(x(minVal), fmt(minVal)), lbl(x(q1), fmt(q1)), lbl(x(med), fmt(med)),
-      lbl(x(q3), fmt(q3)), lbl(x(maxVal), fmt(maxVal)),
+      // median line
+      ln(cx - boxW/2, y(med), cx + boxW/2, y(med), "#c00", "2"),
+      // labels
+      lbl(y(maxVal), fmt(maxVal)), lbl(y(q3), fmt(q3)), lbl(y(med), fmt(med)),
+      lbl(y(q1), fmt(q1)), lbl(y(minVal), fmt(minVal)),
     )
 
   def parseDoubles(input: String): Seq[Double] =
