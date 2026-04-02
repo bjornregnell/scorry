@@ -422,3 +422,24 @@ object SummaryStatistics:
     val dVarYSq = meanProduct(bCenter, bCenter)
     if dVarXSq <= 0 || dVarYSq <= 0 then 0.0
     else math.sqrt(dCovSq / math.sqrt(dVarXSq * dVarYSq))
+
+  /** Computes a permutation-test p-value for the distance correlation.
+    *
+    * Since dCor has no closed-form null distribution, significance is assessed
+    * by randomly permuting one variable and recomputing dCor many times.
+    * The p-value is the fraction of permuted dCor values >= the observed dCor.
+    *
+    * @param pairs a sequence of (x, y) value pairs
+    * @param nPerm number of permutations (default 999)
+    * @param seed random seed for reproducibility
+    * @return the permutation p-value in [0, 1]
+    */
+  def distanceCorrelationPValue(pairs: Seq[(Double, Double)], nPerm: Int = 999, seed: Long = 42L): Double =
+    val observed = distanceCorrelation(pairs)
+    val rng = new scala.util.Random(seed)
+    val xs = pairs.map(_._1)
+    val ys = pairs.map(_._2)
+    val count = (1 to nPerm).count: _ =>
+      val shuffledY = rng.shuffle(ys)
+      distanceCorrelation(xs.zip(shuffledY)) >= observed
+    (count + 1).toDouble / (nPerm + 1)

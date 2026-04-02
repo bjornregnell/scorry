@@ -28,16 +28,18 @@
     }
     .tip::after {
       content: attr(data-tip);
-      position: absolute;
-      left: 0; top: 100%;
-      z-index: 1;
+      position: fixed;
+      left: 5vw; top: auto; bottom: 1em;
+      z-index: 10;
       background: #333;
       color: #fff;
-      padding: 0.4em 0.6em;
+      padding: 0.6em 0.8em;
       border-radius: 4px;
       font-size: 0.85rem;
-      width: max-content;
-      max-width: 25em;
+      width: 90vw;
+      max-width: 40em;
+      max-height: 40vh;
+      overflow-y: auto;
       white-space: normal;
       opacity: 0;
       pointer-events: none;
